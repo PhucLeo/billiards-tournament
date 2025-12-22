@@ -412,3 +412,103 @@ input::placeholder{color: rgba(234,240,255,.45)}
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   ✅ Prize pinned on top banner
+   ========================================================= */
+.prize-pin{
+  margin: 14px 0 0;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: radial-gradient(520px 180px at 18% 0%, rgba(232,217,168,.20), transparent 65%),
+              rgba(255,255,255,.05);
+  box-shadow: 0 16px 48px rgba(0,0,0,.45);
+}
+
+.prize-pin__head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 12px;
+}
+
+.prize-pin__title{
+  font-weight: 1000;
+  letter-spacing: .02em;
+  color: var(--gold);
+  font-size: 16px;
+}
+
+.prize-pin__total{
+  font-size: 12px;
+  color: var(--muted);
+}
+.prize-pin__total strong{
+  color: var(--text);
+  font-weight: 1000;
+}
+
+.prize-pin__grid{
+  display:grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  gap: 12px;
+}
+
+.prize-pin__item{
+  border-radius: 16px;
+  background: rgba(7,11,18,.62);
+  border: 1px solid rgba(255,255,255,.14);
+  padding: 14px 12px;
+  text-align:center;
+}
+
+.prize-pin__rank{
+  font-weight: 1000;
+  margin-bottom: 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.prize-pin__money{
+  font-weight: 1000;
+  font-size: 18px;
+}
+
+.prize-pin__item--gold .prize-pin__rank{ color: #FFD54F; }
+.prize-pin__item--silver .prize-pin__rank{ color: #CFD8DC; }
+.prize-pin__item--bronze .prize-pin__rank{ color: #E0A96D; }
+
+.prize-pin__item--gold{
+  position: relative;
+  overflow:hidden;
+}
+.prize-pin__item--gold::after{
+  content:"";
+  position:absolute;
+  inset:-40px -40px auto -40px;
+  height: 140px;
+  background: radial-gradient(circle at 35% 35%, rgba(255,213,79,.35), transparent 60%);
+  pointer-events:none;
+}
+
+/* 🏆 Cúp lớn cho giải nhất */
+.prize-pin__cup{
+  font-size: 22px;
+  filter: drop-shadow(0 8px 18px rgba(255,213,79,.25));
+}
+
+/* Mobile responsive */
+@media (max-width: 980px){
+  .prize-pin__grid{
+    grid-template-columns: 1fr;
+  }
+  .prize-pin__head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
