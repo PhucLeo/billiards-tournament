@@ -1,4 +1,8 @@
 (function () {
+  // ✅ Web App URL của bạn (Apps Script)
+  const GOOGLE_SCRIPT_WEBAPP_URL =
+    "https://script.google.com/macros/s/AKfycbzQUaIXYGK3xA_5sWWf4OkU4--UAT26drV66dRiR1qSjkUqi7wywvNrNle2TDDeB5PRAA/exec";
+
   const form = document.getElementById("regForm");
   const result = document.getElementById("result");
   const copyBtn = document.getElementById("copyBtn");
@@ -9,7 +13,7 @@
   }
 
   function normalizePhone(phone) {
-    return (phone || "").replace(/\s+/g, "").replace(/-/g, "");
+    return (phone || "").trim().replace(/\s+/g, "").replace(/-/g, "");
   }
 
   function validate(data) {
@@ -25,6 +29,7 @@
     }
 
     const msisdn = normalizePhone(data.msisdn);
+    // Không ép format quốc gia để linh hoạt, chỉ check tối thiểu
     if (!msisdn || msisdn.length < 8) {
       setError("msisdn", "Vui lòng nhập số điện thoại hợp lệ.");
       ok = false;
@@ -47,12 +52,48 @@
     return `Q4BIA-${y}${m}${day}-${rand}`;
   }
 
-  function showResult(html) {
+  function showResult(html, isError) {
     result.innerHTML = html;
     result.style.display = "block";
+    result.style.background = isError
+      ? "rgba(255, 120, 120, .10)"
+      : "rgba(232,217,168,.08)";
   }
 
-  form.addEventListener("submit", (e) => {
+  async function postToSheet(payload) {
+    // Apps Script đôi lúc cần text/plain để tránh preflight CORS
+    const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    });
+
+    const text = await res.text();
+
+    // Parse an toàn
+    let json = null;
+    try {
+      json = JSON.parse(text);
+    } catch (_) {}
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} - ${text || "Request failed"}`);
+    }
+
+    // Nếu script trả về {ok:false}
+    if (json && json.ok === false) {
+      throw new Error(json.error || "Submit failed");
+    }
+
+    return true;
+  }
+
+  if (!form) {
+    console.error("Không tìm thấy form #regForm. Kiểm tra lại index.html.");
+    return;
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const data = {
@@ -61,40 +102,89 @@
       department: form.department.value,
       type: form.type.value,
       level: form.level.value,
-      note: form.note.value
+      note: form.note.value,
     };
 
     if (!validate(data)) return;
 
     const regCode = makeRegCode();
-    const payload = { ...data, regCode, submittedAt: new Date().toISOString() };
+    const payload = {
+      ...data,
+      msisdn: normalizePhone(data.msisdn),
+      regCode,
+      submittedAt: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      source: "phucleo.github.io/billiards-tournament",
+    };
 
-    // Lưu local để demo (GitHub Pages là trang tĩnh)
-    localStorage.setItem("q4_billiards_registration_last", JSON.stringify(payload));
+    showResult(
+      `<div><strong>Đang gửi đăng ký...</strong></div>
+       <div class="muted" style="margin-top:6px;font-size:12px;">Vui lòng chờ trong giây lát.</div>`
+    );
 
-    showResult(`
-      <div><strong>Đăng ký thành công!</strong></div>
-      <div>Mã đăng ký của bạn: <strong class="mono">${regCode}</strong></div>
-      <div class="muted" style="margin-top:6px;font-size:12px;">
-        Vui lòng chụp màn hình hoặc copy nội dung đăng ký để gửi cho BTC (nếu cần).
-      </div>
-    `);
+    // Disable submit để tránh spam click
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
 
-    copyBtn.disabled = false;
-    copyBtn.dataset.payload = JSON.stringify(payload, null, 2);
-
-    form.reset();
-    form.type.value = "single";
-    form.level.value = "newbie";
-  });
-
-  copyBtn.addEventListener("click", async () => {
     try {
-      const txt = copyBtn.dataset.payload || "";
-      await navigator.clipboard.writeText(txt);
-      showResult(`<div><strong>Đã copy!</strong> Bạn có thể paste gửi cho BTC.</div>`);
+      await postToSheet(payload);
+
+      showResult(
+        `<div><strong>Đăng ký thành công!</strong></div>
+         <div>Mã đăng ký của bạn: <strong class="mono">${regCode}</strong></div>
+         <div class="muted" style="margin-top:6px;font-size:12px;">
+           Dữ liệu đã được lưu vào Google Sheet của BTC.
+         </div>`
+      );
+
+      // Cho phép copy phòng khi cần
+      if (copyBtn) {
+        copyBtn.disabled = false;
+        copyBtn.dataset.payload = JSON.stringify(payload, null, 2);
+      }
+
+      form.reset();
+      // Set default lại cho select
+      if (form.type) form.type.value = "single";
+      if (form.level) form.level.value = "newbie";
     } catch (err) {
-      showResult(`<div><strong>Không copy được tự động.</strong> Trình duyệt chặn clipboard. Bạn thử dùng Ctrl+C thủ công.</div>`);
+      showResult(
+        `<div><strong>Gửi đăng ký thất bại.</strong></div>
+         <div class="muted" style="margin-top:6px;font-size:12px;">
+           Lỗi: ${String(err.message || err)}
+         </div>
+         <div class="muted" style="margin-top:6px;font-size:12px;">
+           Bạn có thể bấm "Copy nội dung đăng ký" để gửi thủ công cho BTC.
+         </div>`,
+        true
+      );
+
+      if (copyBtn) {
+        copyBtn.disabled = false;
+        copyBtn.dataset.payload = JSON.stringify(payload, null, 2);
+      }
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      try {
+        const txt = copyBtn.dataset.payload || "";
+        if (!txt) {
+          showResult(`<div><strong>Chưa có dữ liệu để copy.</strong></div>`, true);
+          return;
+        }
+        await navigator.clipboard.writeText(txt);
+        showResult(`<div><strong>Đã copy!</strong> Bạn có thể paste gửi cho BTC.</div>`);
+      } catch (err) {
+        showResult(
+          `<div><strong>Không copy được tự động.</strong></div>
+           <div class="muted" style="margin-top:6px;font-size:12px;">Bạn thử Ctrl+C thủ công.</div>`,
+          true
+        );
+      }
+    });
+  }
 })();
