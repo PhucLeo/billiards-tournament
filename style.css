@@ -352,3 +352,63 @@ input::placeholder{color: rgba(234,240,255,.45)}
   }
 }
 
+/* ===== Prize section ===== */
+.prize-box{
+  margin: 14px 0 18px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(
+    180deg,
+    rgba(232,217,168,.12),
+    rgba(255,255,255,.04)
+  );
+  box-shadow: 0 14px 40px rgba(0,0,0,.35);
+}
+
+.prize-box__title{
+  font-weight: 900;
+  letter-spacing: .02em;
+  margin-bottom: 12px;
+  color: var(--gold);
+}
+
+.prize-list{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.prize-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  border-radius: 14px;
+  background: rgba(7,11,18,.6);
+  border: 1px solid rgba(255,255,255,.14);
+  text-align: center;
+}
+
+.prize-rank{
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.prize-money{
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+/* Medal colors */
+.prize-item--gold .prize-rank{ color: #FFD54F; }
+.prize-item--silver .prize-rank{ color: #CFD8DC; }
+.prize-item--bronze .prize-rank{ color: #E0A96D; }
+
+@media (max-width: 700px){
+  .prize-list{
+    grid-template-columns: 1fr;
+  }
+}
