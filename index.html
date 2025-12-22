@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="vi">
 <head>
@@ -9,7 +10,7 @@
 </head>
 
 <body>
-  <header class="topbar">
+  <header class="topbar" id="top">
     <div class="container topbar__inner">
       <div class="brand">
         <div class="brand__mark" aria-hidden="true"></div>
@@ -30,12 +31,12 @@
           <div class="pill">Giải Bi-a Thể thao Quý IV</div>
           <h1>Đăng ký tham gia<br/>Giải Bi-a Quý IV</h1>
           <p class="lead">
-            Nền tảng đăng ký nhanh gọn cho giải đấu nội bộ. Vui lòng điền thông tin chính xác để BTC sắp xếp bảng đấu.
+            Đăng ký nhanh gọn cho giải đấu nội bộ. Vui lòng điền thông tin chính xác để BTC chốt danh sách và sắp xếp thi đấu.
           </p>
 
           <div class="hero__cta">
             <a class="btn" href="#register">Mở form đăng ký</a>
-            <a class="btn btn--soft" href="#info">Xem thể lệ</a>
+            <a class="btn btn--soft" href="#rules">Xem thể lệ</a>
           </div>
 
           <div class="qrline">
@@ -47,15 +48,16 @@
         <div class="hero__card" role="region" aria-label="Thẻ thông tin giải đấu">
           <div class="card card--glow">
             <div class="card__title">Thông tin nhanh</div>
+
             <ul class="list">
-              <li><span class="k">Chủ đề</span><span class="v">Q4 Sports Billiards Tournament</span></li>
-              <li><span class="k">Hình thức</span><span class="v">Cá nhân / Đôi (tuỳ BTC)</span></li>
-              <li><span class="k">Trình độ</span><span class="v">Mở rộng (chia bảng theo level)</span></li>
-              <li><span class="k">Đăng ký</span><span class="v">Online trên trang này</span></li>
+              <li><span class="k">Hình thức</span><span class="v">Đánh đôi (theo cặp)</span></li>
+              <li><span class="k">Bộ bi</span><span class="v">1–7, 9–15, bi 8</span></li>
+              <li><span class="k">Sau đề pa</span><span class="v">4 bi chạm băng</span></li>
+              <li><span class="k">Luật lỗi</span><span class="v">6 lỗi sẽ thua</span></li>
             </ul>
 
             <div class="card__note">
-              * Không hiển thị ngày/giờ/địa điểm trên trang (theo yêu cầu banner). BTC sẽ thông báo chi tiết sau.
+              * Không hiển thị ngày/giờ/địa điểm trên trang. BTC sẽ thông báo chi tiết sau khi chốt danh sách.
             </div>
 
             <a class="btn btn--wide" href="#register">Điền form đăng ký</a>
@@ -66,34 +68,47 @@
       <div class="hero__bg" aria-hidden="true"></div>
     </section>
 
-    <section id="info" class="section">
+    <section id="rules" class="section">
       <div class="container">
-        <h2>Thể lệ & Quy định cơ bản</h2>
+        <h2>Thể lệ thi đấu</h2>
+
         <div class="grid3">
           <div class="panel">
-            <h3>Đối tượng</h3>
-            <p>Nhân sự công ty/đơn vị tham gia theo danh sách BTC xác nhận.</p>
+            <h3>Chia đội</h3>
+            <p>Thi đấu theo <strong>đội 2 người</strong>, chia đội theo từng cặp.</p>
           </div>
           <div class="panel">
-            <h3>Thi đấu</h3>
-            <p>Chia bảng/nhánh theo số lượng đăng ký. BTC sẽ công bố sau khi chốt danh sách.</p>
+            <h3>Bộ bóng</h3>
+            <p>7 bóng nhẵn <strong>1–7</strong>, 7 bóng sọc <strong>9–15</strong> và bóng <strong>số 8</strong> màu đen.</p>
           </div>
           <div class="panel">
-            <h3>Fair-play</h3>
-            <p>Tôn trọng đối thủ, tuân thủ luật chơi, không tranh cãi kéo dài. Quyết định BTC là quyết định cuối.</p>
+            <h3>Luật thua</h3>
+            <p>Tổng <strong>6 lỗi</strong> trong trận sẽ bị xử <strong>thua</strong>.</p>
           </div>
         </div>
 
         <div class="panel panel--wide">
-          <h3>Hạng mục đề xuất (BTC có thể điều chỉnh)</h3>
-          <div class="chips">
-            <span class="chip">Cá nhân</span>
-            <span class="chip">Đôi</span>
-            <span class="chip">Chia level A/B</span>
-            <span class="chip">Vòng bảng + Knockout</span>
-          </div>
-          <p class="muted">
-            Bạn có thể ghi chú trình độ/kinh nghiệm trong form để BTC hỗ trợ chia bảng công bằng.
+          <h3>Quy định chi tiết</h3>
+          <ul class="rules">
+            <li><strong>Chia đội</strong> theo từng cặp.</li>
+            <li>
+              <strong>Các quả bóng</strong> gồm: 7 bóng nhẵn (1–7), 7 bóng sọc (9–15) và bóng số 8 màu đen.
+            </li>
+            <li><strong>Sau khi đề pa</strong> phải có <strong>4 bi chạm băng</strong>.</li>
+            <li>
+              <strong>Đánh bi không hợp lệ</strong>:
+              <ul>
+                <li>Bi không chạm băng</li>
+                <li>Văng bi khỏi bàn</li>
+                <li>Bắn bi của đối thủ xuống lỗ</li>
+                <li>Bắn chạm bi của đối thủ đầu tiên hoặc không chạm bi nào</li>
+              </ul>
+            </li>
+            <li><strong>6 lỗi sẽ thua</strong>.</li>
+          </ul>
+
+          <p class="muted small-note">
+            Lưu ý: BTC có thể điều chỉnh một số chi tiết vận hành (bốc thăm, nhánh đấu, thời lượng trận) để phù hợp số lượng đội đăng ký.
           </p>
         </div>
       </div>
@@ -130,8 +145,8 @@
               <div class="field">
                 <label for="type">Hình thức thi đấu</label>
                 <select id="type" name="type">
-                  <option value="single" selected>Cá nhân</option>
-                  <option value="double">Đôi</option>
+                  <option value="double" selected>Đôi</option>
+                  <option value="single">Cá nhân</option>
                   <option value="unknown">Chưa xác định (BTC sắp xếp)</option>
                 </select>
               </div>
@@ -161,20 +176,19 @@
             <div id="result" class="result" role="status" aria-live="polite"></div>
 
             <div class="hint">
-              <div class="hint__title">Gợi ý cho QR trên banner</div>
+              <div class="hint__title">Dùng cho banner/QR</div>
               <div class="hint__text">Scan QR để đăng ký giải bi-a Quý IV</div>
             </div>
 
             <div class="disclaimer">
-              Lưu ý: Đây là landing page tĩnh trên GitHub Pages. Dữ liệu sẽ được lưu tạm trong trình duyệt (local) để hiển thị mã đăng ký.
-              Nếu bạn muốn lưu về Google Sheet/Email, mình sẽ chỉnh form sang gửi tới Google Form hoặc Formspree.
+              Lưu ý: Dữ liệu đăng ký sẽ được gửi về Google Sheet của BTC. Nếu gửi lỗi, bạn có thể copy nội dung đăng ký để gửi thủ công.
             </div>
           </form>
 
           <aside class="side">
             <div class="panel">
               <h3>Liên hệ BTC</h3>
-              <p class="muted">Điền thông tin liên hệ BTC tại đây (tùy bạn cập nhật).</p>
+              <p class="muted">Bạn có thể cập nhật email/đầu mối BTC tại đây.</p>
               <ul class="contact">
                 <li><span class="dot"></span> Email: <span class="mono">btcthethaolumitel@...</span></li>
                 <li><span class="dot"></span> Hotline: <span class="mono">+257 ...</span></li>
@@ -182,10 +196,11 @@
             </div>
 
             <div class="panel">
-              <h3>Ghi chú</h3>
+              <h3>Gợi ý nhanh</h3>
               <p class="muted">
-                Trang này tối ưu cho chia sẻ link, tạo QR, và dùng trên điện thoại. Bạn có thể thay logo/brand sau.
+                Hình thức thi đấu mặc định là <strong>đánh đôi</strong>. Vui lòng ghi chú nếu bạn cần BTC ghép cặp.
               </p>
+              <a class="btn btn--wide btn--soft" href="#rules">Xem thể lệ chi tiết</a>
             </div>
           </aside>
         </div>

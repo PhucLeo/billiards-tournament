@@ -1,5 +1,5 @@
+// app.js
 (function () {
-  // ✅ Web App URL của bạn (Apps Script)
   const GOOGLE_SCRIPT_WEBAPP_URL =
     "https://script.google.com/macros/s/AKfycbzQUaIXYGK3xA_5sWWf4OkU4--UAT26drV66dRiR1qSjkUqi7wywvNrNle2TDDeB5PRAA/exec";
 
@@ -29,7 +29,6 @@
     }
 
     const msisdn = normalizePhone(data.msisdn);
-    // Không ép format quốc gia để linh hoạt, chỉ check tối thiểu
     if (!msisdn || msisdn.length < 8) {
       setError("msisdn", "Vui lòng nhập số điện thoại hợp lệ.");
       ok = false;
@@ -61,7 +60,6 @@
   }
 
   async function postToSheet(payload) {
-    // Apps Script đôi lúc cần text/plain để tránh preflight CORS
     const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -70,20 +68,11 @@
 
     const text = await res.text();
 
-    // Parse an toàn
     let json = null;
-    try {
-      json = JSON.parse(text);
-    } catch (_) {}
+    try { json = JSON.parse(text); } catch (_) {}
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status} - ${text || "Request failed"}`);
-    }
-
-    // Nếu script trả về {ok:false}
-    if (json && json.ok === false) {
-      throw new Error(json.error || "Submit failed");
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status} - ${text || "Request failed"}`);
+    if (json && json.ok === false) throw new Error(json.error || "Submit failed");
 
     return true;
   }
@@ -122,7 +111,6 @@
        <div class="muted" style="margin-top:6px;font-size:12px;">Vui lòng chờ trong giây lát.</div>`
     );
 
-    // Disable submit để tránh spam click
     const submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
 
@@ -137,15 +125,15 @@
          </div>`
       );
 
-      // Cho phép copy phòng khi cần
       if (copyBtn) {
         copyBtn.disabled = false;
         copyBtn.dataset.payload = JSON.stringify(payload, null, 2);
       }
 
       form.reset();
-      // Set default lại cho select
-      if (form.type) form.type.value = "single";
+
+      // ✅ Mặc định lại: Đôi
+      if (form.type) form.type.value = "double";
       if (form.level) form.level.value = "newbie";
     } catch (err) {
       showResult(
