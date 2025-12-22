@@ -242,3 +242,15 @@
     });
   }
 })();
+
+// Ensure hash navigation scrolls correctly (mobile safe)
+(function () {
+  if (window.location.hash === '#register') {
+    setTimeout(() => {
+      const el = document.getElementById('register');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
+  }
+})();
