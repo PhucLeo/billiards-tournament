@@ -1,10 +1,14 @@
-// app.js — optimized with warm-up for Google Apps Script
+// app.js — optimized: delay warm-up, keep-warm, safe timeout
 (function () {
   const GOOGLE_SCRIPT_WEBAPP_URL =
     "https://script.google.com/macros/s/AKfycbzQUaIXYGK3xA_5sWWf4OkU4--UAT26drV66dRiR1qSjkUqi7wywvNrNle2TDDeB5PRAA/exec";
 
-  // 🔥 Warm-up: gọi GET nhẹ để tránh cold start khi submit
-  fetch(GOOGLE_SCRIPT_WEBAPP_URL, { method: "GET" }).catch(() => {});
+  // ====== Tunables ======
+  const WARMUP_DELAY_MS = 1200;           // delay để UI render trước
+  const KEEP_WARM_INTERVAL_MS = 180000;   // 3 phút ping 1 lần
+  const FETCH_TIMEOUT_MS = 12000;         // timeout an toàn cho GET/POST (12s)
+  const WARMUP_TIMEOUT_MS = 10000;        // warm-up timeout (10s)
+  // ======================
 
   const form = document.getElementById("regForm");
   const result = document.getElementById("result");
@@ -55,6 +59,7 @@
   }
 
   function showResult(html, isError) {
+    if (!result) return;
     result.innerHTML = html;
     result.style.display = "block";
     result.style.background = isError
@@ -62,25 +67,82 @@
       : "rgba(232,217,168,.08)";
   }
 
+  // Fetch có timeout an toàn (tránh treo vô hạn)
+  async function fetchWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const res = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        // keepalive có thể giúp trên một số browser khi rời trang
+        keepalive: options && options.method === "POST",
+      });
+      return res;
+    } finally {
+      clearTimeout(id);
+    }
+  }
+
+  // Warm-up nhẹ (GET) để giảm cold start
+  async function warmUpOnce() {
+    try {
+      await fetchWithTimeout(
+        GOOGLE_SCRIPT_WEBAPP_URL,
+        { method: "GET" },
+        WARMUP_TIMEOUT_MS
+      );
+    } catch (_) {
+      // im lặng: warm-up fail không ảnh hưởng user
+    }
+  }
+
+  // Keep warm (ping định kỳ khi tab đang mở)
+  function startKeepWarm() {
+    // Chỉ ping khi tab đang visible để tránh tốn tài nguyên
+    setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      warmUpOnce();
+    }, KEEP_WARM_INTERVAL_MS);
+  }
+
   async function postToSheet(payload) {
-    const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-    });
+    const res = await fetchWithTimeout(
+      GOOGLE_SCRIPT_WEBAPP_URL,
+      {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      },
+      FETCH_TIMEOUT_MS
+    );
 
     const text = await res.text();
     let json = null;
     try { json = JSON.parse(text); } catch (_) {}
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    if (json && json.ok === false) throw new Error(json.error || "Submit failed");
-
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    if (json && json.ok === false) {
+      throw new Error(json.error || "Submit failed");
+    }
     return true;
   }
 
+  // ====== Init warm-up strategy ======
+  window.addEventListener("load", () => {
+    // Delay warm-up để UI render trước (đỡ cảm giác load chậm)
+    setTimeout(() => {
+      warmUpOnce();
+      startKeepWarm();
+    }, WARMUP_DELAY_MS);
+  });
+  // ================================
+
   if (!form) {
-    console.error("Không tìm thấy form #regForm");
+    console.error("Không tìm thấy form #regForm. Kiểm tra lại index.html.");
     return;
   }
 
@@ -133,17 +195,20 @@
       }
 
       form.reset();
+      // ✅ Mặc định lại: Đôi
       if (form.type) form.type.value = "double";
       if (form.level) form.level.value = "newbie";
-
     } catch (err) {
+      const msg =
+        err && err.name === "AbortError"
+          ? "Hết thời gian chờ (timeout). Vui lòng thử lại."
+          : (err && err.message) ? err.message : String(err);
+
       showResult(
         `<div><strong>Gửi đăng ký thất bại.</strong></div>
+         <div class="muted" style="margin-top:6px;font-size:12px;">${msg}</div>
          <div class="muted" style="margin-top:6px;font-size:12px;">
-           ${err.message || err}
-         </div>
-         <div class="muted" style="margin-top:6px;font-size:12px;">
-           Bạn có thể copy nội dung để gửi thủ công cho BTC
+           Bạn có thể bấm "Copy nội dung đăng ký" để gửi thủ công cho BTC.
          </div>`,
         true
       );
@@ -161,11 +226,18 @@
     copyBtn.addEventListener("click", async () => {
       try {
         const txt = copyBtn.dataset.payload || "";
-        if (!txt) return;
+        if (!txt) {
+          showResult(`<div><strong>Chưa có dữ liệu để copy.</strong></div>`, true);
+          return;
+        }
         await navigator.clipboard.writeText(txt);
-        showResult(`<div><strong>Đã copy!</strong></div>`);
+        showResult(`<div><strong>Đã copy!</strong> Bạn có thể paste gửi cho BTC.</div>`);
       } catch (_) {
-        showResult(`<div><strong>Không copy được, hãy Ctrl+C thủ công.</strong></div>`, true);
+        showResult(
+          `<div><strong>Không copy được tự động.</strong></div>
+           <div class="muted" style="margin-top:6px;font-size:12px;">Bạn thử Ctrl+C thủ công.</div>`,
+          true
+        );
       }
     });
   }
