@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Đăng ký Giải Bi-a Thể thao Quý IV</title>
+  <meta name="description" content="Landing page đăng ký tham gia giải bi-a thể thao Quý IV." />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true"></div>
+        <div class="brand__text">
+          <div class="brand__title">Q4 SPORTS</div>
+          <div class="brand__sub">BILLIARDS TOURNAMENT</div>
+        </div>
+      </div>
+
+      <a class="btn btn--ghost" href="#register">Đăng ký ngay</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <div class="pill">Giải Bi-a Thể thao Quý IV</div>
+          <h1>Đăng ký tham gia<br/>Giải Bi-a Quý IV</h1>
+          <p class="lead">
+            Nền tảng đăng ký nhanh gọn cho giải đấu nội bộ. Vui lòng điền thông tin chính xác để BTC sắp xếp bảng đấu.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn" href="#register">Mở form đăng ký</a>
+            <a class="btn btn--soft" href="#info">Xem thể lệ</a>
+          </div>
+
+          <div class="qrline">
+            <span class="qrline__dot" aria-hidden="true"></span>
+            <span><strong>Scan QR để đăng ký giải bi-a Quý IV</strong></span>
+          </div>
+        </div>
+
+        <div class="hero__card" role="region" aria-label="Thẻ thông tin giải đấu">
+          <div class="card card--glow">
+            <div class="card__title">Thông tin nhanh</div>
+            <ul class="list">
+              <li><span class="k">Chủ đề</span><span class="v">Q4 Sports Billiards Tournament</span></li>
+              <li><span class="k">Hình thức</span><span class="v">Cá nhân / Đôi (tuỳ BTC)</span></li>
+              <li><span class="k">Trình độ</span><span class="v">Mở rộng (chia bảng theo level)</span></li>
+              <li><span class="k">Đăng ký</span><span class="v">Online trên trang này</span></li>
+            </ul>
+
+            <div class="card__note">
+              * Không hiển thị ngày/giờ/địa điểm trên trang (theo yêu cầu banner). BTC sẽ thông báo chi tiết sau.
+            </div>
+
+            <a class="btn btn--wide" href="#register">Điền form đăng ký</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__bg" aria-hidden="true"></div>
+    </section>
+
+    <section id="info" class="section">
+      <div class="container">
+        <h2>Thể lệ & Quy định cơ bản</h2>
+        <div class="grid3">
+          <div class="panel">
+            <h3>Đối tượng</h3>
+            <p>Nhân sự công ty/đơn vị tham gia theo danh sách BTC xác nhận.</p>
+          </div>
+          <div class="panel">
+            <h3>Thi đấu</h3>
+            <p>Chia bảng/nhánh theo số lượng đăng ký. BTC sẽ công bố sau khi chốt danh sách.</p>
+          </div>
+          <div class="panel">
+            <h3>Fair-play</h3>
+            <p>Tôn trọng đối thủ, tuân thủ luật chơi, không tranh cãi kéo dài. Quyết định BTC là quyết định cuối.</p>
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <h3>Hạng mục đề xuất (BTC có thể điều chỉnh)</h3>
+          <div class="chips">
+            <span class="chip">Cá nhân</span>
+            <span class="chip">Đôi</span>
+            <span class="chip">Chia level A/B</span>
+            <span class="chip">Vòng bảng + Knockout</span>
+          </div>
+          <p class="muted">
+            Bạn có thể ghi chú trình độ/kinh nghiệm trong form để BTC hỗ trợ chia bảng công bằng.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="register" class="section section--dark">
+      <div class="container">
+        <div class="section__head">
+          <h2>Form đăng ký</h2>
+          <p class="muted">Điền đầy đủ thông tin. Sau khi gửi, bạn sẽ nhận mã đăng ký ngay trên màn hình.</p>
+        </div>
+
+        <div class="formwrap">
+          <form id="regForm" class="form" novalidate>
+            <div class="row">
+              <div class="field">
+                <label for="fullName">Họ và tên <span class="req">*</span></label>
+                <input id="fullName" name="fullName" type="text" placeholder="Ví dụ: Nguyễn Văn A" required />
+                <div class="error" data-err-for="fullName"></div>
+              </div>
+              <div class="field">
+                <label for="msisdn">Số điện thoại <span class="req">*</span></label>
+                <input id="msisdn" name="msisdn" type="tel" placeholder="Ví dụ: 257xxxxxxxx" required />
+                <div class="error" data-err-for="msisdn"></div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="department">Phòng ban / Đơn vị <span class="req">*</span></label>
+                <input id="department" name="department" type="text" placeholder="Ví dụ: IT / Sales / HR..." required />
+                <div class="error" data-err-for="department"></div>
+              </div>
+              <div class="field">
+                <label for="type">Hình thức thi đấu</label>
+                <select id="type" name="type">
+                  <option value="single" selected>Cá nhân</option>
+                  <option value="double">Đôi</option>
+                  <option value="unknown">Chưa xác định (BTC sắp xếp)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="level">Trình độ (tự đánh giá)</label>
+                <select id="level" name="level">
+                  <option value="newbie" selected>Mới chơi</option>
+                  <option value="intermediate">Trung bình</option>
+                  <option value="advanced">Khá</option>
+                  <option value="pro">Tốt</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="note">Ghi chú</label>
+                <input id="note" name="note" type="text" placeholder="Ví dụ: ưu tiên đánh đôi / đã từng thi đấu..." />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn" type="submit">Gửi đăng ký</button>
+              <button class="btn btn--ghost" type="button" id="copyBtn" disabled>Copy nội dung đăng ký</button>
+            </div>
+
+            <div id="result" class="result" role="status" aria-live="polite"></div>
+
+            <div class="hint">
+              <div class="hint__title">Gợi ý cho QR trên banner</div>
+              <div class="hint__text">Scan QR để đăng ký giải bi-a Quý IV</div>
+            </div>
+
+            <div class="disclaimer">
+              Lưu ý: Đây là landing page tĩnh trên GitHub Pages. Dữ liệu sẽ được lưu tạm trong trình duyệt (local) để hiển thị mã đăng ký.
+              Nếu bạn muốn lưu về Google Sheet/Email, mình sẽ chỉnh form sang gửi tới Google Form hoặc Formspree.
+            </div>
+          </form>
+
+          <aside class="side">
+            <div class="panel">
+              <h3>Liên hệ BTC</h3>
+              <p class="muted">Điền thông tin liên hệ BTC tại đây (tùy bạn cập nhật).</p>
+              <ul class="contact">
+                <li><span class="dot"></span> Email: <span class="mono">btcthethaolumitel@...</span></li>
+                <li><span class="dot"></span> Hotline: <span class="mono">+257 ...</span></li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h3>Ghi chú</h3>
+              <p class="muted">
+                Trang này tối ưu cho chia sẻ link, tạo QR, và dùng trên điện thoại. Bạn có thể thay logo/brand sau.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div class="muted">© Q4 Sports — Billiards Tournament</div>
+        <a class="muted" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'})">Lên đầu trang</a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
