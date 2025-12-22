@@ -29,12 +29,30 @@
   </header>
 
   <main>
+    <!-- ✅ Banner + QR ở đầu trang -->
+    <section class="top-media">
+      <div class="container">
+        <div class="reg-media reg-media--top">
+          <div class="reg-media__banner">
+            <img class="reg-banner" src="./assets/banner-q4-billiards.png" alt="Q4 Sports Billiards Tournament Banner" />
+          </div>
+
+          <div class="reg-media__qr">
+            <img class="reg-qr__img" src="./assets/qr-billiards-register.png" alt="QR đăng ký giải bi-a Quý IV" />
+            <div class="reg-qr__text">Scan QR để đăng ký<br/>giải bi-a Quý IV</div>
+            <a class="btn btn--soft reg-qr__btn" href="#register">Mở form đăng ký</a>
+            <div class="reg-qr__hint muted mono">/billiards-tournament/#register</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- HERO -->
     <section class="hero">
       <div class="container hero__grid">
         <div class="hero__content">
           <div class="pill">Giải Bi-a Thể thao Quý IV</div>
-          <h1>Đăng ký tham gia<br/>Giải Bi-a Quý IV</h1>
+          <h1>Q4 Sports<br/>Billiards Tournament</h1>
           <p class="lead">
             Giải đấu nội bộ – thi đấu <strong>đánh đôi</strong>. Đăng ký nhanh bằng form bên dưới hoặc quét QR.
           </p>
@@ -50,7 +68,7 @@
           </div>
         </div>
 
-        <div class="hero__card" role="region" aria-label="Thẻ thông tin giải đấu">
+        <div class="hero__card" role="region" aria-label="Thẻ thông tin nhanh">
           <div class="card card--glow">
             <div class="card__title">Thông tin nhanh</div>
 
@@ -73,7 +91,7 @@
       <div class="hero__bg" aria-hidden="true"></div>
     </section>
 
-    <!-- THỂ LỆ / CHƯƠNG TRÌNH -->
+    <!-- THỂ LỆ -->
     <section id="rules" class="section">
       <div class="container">
         <h2>Thể lệ thi đấu</h2>
@@ -98,8 +116,8 @@
           <ul class="rules">
             <li><strong>Chia đội</strong> theo từng cặp.</li>
             <li>
-              <strong>Các quả bóng</strong> bao gồm bảy quả bóng nhẵn (1–7),
-              bảy quả bóng sọc (9–15) và quả bóng số 8 màu đen.
+              <strong>Các quả bóng</strong> bao gồm bảy quả bóng nhẵn được đánh số từ 1 đến 7,
+              bảy quả bóng sọc được đánh số từ 9 đến 15 và quả bóng số 8 màu đen.
             </li>
             <li><strong>Sau khi đề pa</strong> phải có <strong>4 bi chạm băng</strong>.</li>
             <li>
@@ -129,18 +147,6 @@
           <p class="muted">Điền đầy đủ thông tin. Sau khi gửi, bạn sẽ nhận mã đăng ký ngay trên màn hình.</p>
         </div>
 
-        <!-- ✅ Banner + QR (tách riêng, không che form) -->
-        <div class="reg-media">
-          <div class="reg-media__banner">
-            <img class="reg-banner" src="./assets/banner-q4-billiards.png" alt="Q4 Sports Billiards Tournament Banner" />
-          </div>
-          <div class="reg-media__qr">
-            <img class="reg-qr__img" src="./assets/qr-billiards-register.png" alt="QR đăng ký giải bi-a Quý IV" />
-            <div class="reg-qr__text">Scan QR để đăng ký<br/>giải bi-a Quý IV</div>
-            <div class="muted mono" style="font-size:11px; opacity:.85;">/billiards-tournament/#register</div>
-          </div>
-        </div>
-
         <div class="formwrap">
           <form id="regForm" class="form" novalidate>
             <div class="row">
@@ -149,6 +155,7 @@
                 <input id="fullName" name="fullName" type="text" placeholder="Ví dụ: Nguyễn Văn A" required />
                 <div class="error" data-err-for="fullName"></div>
               </div>
+
               <div class="field">
                 <label for="msisdn">Số điện thoại <span class="req">*</span></label>
                 <input id="msisdn" name="msisdn" type="tel" placeholder="Ví dụ: 257xxxxxxxx" required />
@@ -162,6 +169,7 @@
                 <input id="department" name="department" type="text" placeholder="Ví dụ: IT / Sales / HR..." required />
                 <div class="error" data-err-for="department"></div>
               </div>
+
               <div class="field">
                 <label for="type">Hình thức thi đấu</label>
                 <select id="type" name="type">
@@ -182,6 +190,7 @@
                   <option value="pro">Tốt</option>
                 </select>
               </div>
+
               <div class="field">
                 <label for="note">Ghi chú</label>
                 <input id="note" name="note" type="text" placeholder="Ví dụ: ưu tiên đánh đôi / đã từng thi đấu..." />
