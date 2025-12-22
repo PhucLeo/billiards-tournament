@@ -254,3 +254,44 @@
     }, 300);
   }
 })();
+
+// ===== Countdown to event time =====
+(function () {
+  // Event time: 25/12/2025 14:00 (UTC+2 - Bujumbura)
+  const EVENT_TIME = new Date("2025-12-25T14:00:00+02:00").getTime();
+
+  const dEl = document.getElementById("cd-days");
+  const hEl = document.getElementById("cd-hours");
+  const mEl = document.getElementById("cd-minutes");
+  const sEl = document.getElementById("cd-seconds");
+
+  if (!dEl || !hEl || !mEl || !sEl) return;
+
+  function tick() {
+    const now = Date.now();
+    let diff = EVENT_TIME - now;
+
+    if (diff <= 0) {
+      dEl.textContent = "0";
+      hEl.textContent = "0";
+      mEl.textContent = "0";
+      sEl.textContent = "0";
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff %= (1000 * 60 * 60 * 24);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff %= (1000 * 60 * 60);
+    const minutes = Math.floor(diff / (1000 * 60));
+    const seconds = Math.floor(diff / 1000);
+
+    dEl.textContent = days;
+    hEl.textContent = hours.toString().padStart(2, "0");
+    mEl.textContent = minutes.toString().padStart(2, "0");
+    sEl.textContent = seconds.toString().padStart(2, "0");
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
