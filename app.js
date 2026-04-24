@@ -1,7 +1,7 @@
 // app.js — optimized: delay warm-up, keep-warm, safe timeout
 (function () {
   const GOOGLE_SCRIPT_WEBAPP_URL =
-    "https://script.google.com/macros/s/AKfycbzQUaIXYGK3xA_5sWWf4OkU4--UAT26drV66dRiR1qSjkUqi7wywvNrNle2TDDeB5PRAA/exec";
+    "https://script.google.com/macros/s/AKfycbzCDtL2EOPdDbQp56HTSjdBugdX7yNYfmvTDCb-vHtA_fMgbV9-Wa-vgC7R7PNMa66s/exec";
 
   // ====== Tunables ======
   const WARMUP_DELAY_MS = 1200;           // delay để UI render trước
@@ -257,8 +257,8 @@
 
 // ===== Countdown to event time =====
 (function () {
-  // Event time: 25/12/2025 14:00 (UTC+2 - Bujumbura)
-  const EVENT_TIME = new Date("2025-12-25T14:00:00+02:00").getTime();
+  // Event time: 26/04/2026 15:00 (UTC+2 - Bujumbura/Johannesburg)
+  const EVENT_TIME = new Date("2026-04-26T15:00:00+02:00").getTime();
 
   const dEl = document.getElementById("cd-days");
   const hEl = document.getElementById("cd-hours");
@@ -294,4 +294,210 @@
 
   tick();
   setInterval(tick, 1000);
+})();
+
+// ===== Live registrations list from Google Sheets =====
+(function () {
+  const SHEET_ID = "1M3kACEUsdnGr4SmiIOcvvqyMZgYztFZztVDbhftVC60";
+  const SHEET_GID = "249083489";
+  const SHEET_NAME = "Registrations";
+
+  const toggleBtn = document.getElementById("toggleRegistrationsBtn");
+  const refreshBtn = document.getElementById("refreshRegistrationsBtn");
+  const panel = document.getElementById("registrationsPanel");
+  const statusEl = document.getElementById("registrationsStatus");
+  const tableBody = document.getElementById("registrationsTableBody");
+
+  if (!toggleBtn || !refreshBtn || !panel || !statusEl || !tableBody) return;
+
+  let hasLoaded = false;
+  let isLoading = false;
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[char]));
+  }
+
+  function mapType(value) {
+    const normalized = String(value || "").toLowerCase();
+    if (normalized === "double") return { label: "Đôi", className: "double" };
+    if (normalized === "single") return { label: "Cá nhân", className: "single" };
+    return { label: "BTC sắp xếp", className: "unknown" };
+  }
+
+  function mapLevel(value) {
+    const normalized = String(value || "").toLowerCase();
+    if (normalized === "newbie") return "Mới chơi";
+    if (normalized === "intermediate") return "Trung bình";
+    if (normalized === "advanced") return "Khá";
+    if (normalized === "pro") return "Tốt";
+    return value || "-";
+  }
+
+  function formatSubmittedAt(value) {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+
+    return new Intl.DateTimeFormat("vi-VN", {
+      timeZone: "Africa/Johannesburg",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  }
+
+  function getCellValue(cell) {
+    if (!cell) return "";
+    if (cell.f != null) return cell.f;
+    if (cell.v != null) return cell.v;
+    return "";
+  }
+
+  function setStatus(message, isError) {
+    statusEl.textContent = message;
+    statusEl.style.color = isError ? "#ffb4b4" : "";
+  }
+
+  function setLoadingState(loading) {
+    isLoading = loading;
+    toggleBtn.disabled = loading;
+    refreshBtn.disabled = loading;
+    toggleBtn.textContent = loading
+      ? "Đang tải danh sách..."
+      : (panel.hidden ? "Xem danh sách đã đăng ký" : "Ẩn danh sách đã đăng ký");
+  }
+
+  function renderRows(rows) {
+    if (!rows.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="registrations-empty">Chưa có dữ liệu đăng ký trong sheet.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    tableBody.innerHTML = rows.map((row, index) => {
+      const type = mapType(row.type);
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.fullName || "-")}</td>
+          <td>${escapeHtml(row.msisdn || "-")}</td>
+          <td>${escapeHtml(row.department || "-")}</td>
+          <td><span class="registrations-tag registrations-tag--${type.className}">${escapeHtml(type.label)}</span></td>
+          <td>${escapeHtml(mapLevel(row.level))}</td>
+          <td>${escapeHtml(formatSubmittedAt(row.submittedAt))}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function parseSheetResponse(response) {
+    const table = response && response.table;
+    const rows = (table && table.rows) || [];
+
+    const parsed = rows.map((row) => {
+      const cells = row.c || [];
+      return {
+        submittedAt: getCellValue(cells[0]),
+        regCode: getCellValue(cells[1]),
+        fullName: getCellValue(cells[2]),
+        msisdn: getCellValue(cells[3]),
+        department: getCellValue(cells[4]),
+        type: getCellValue(cells[5]),
+        level: getCellValue(cells[6]),
+        note: getCellValue(cells[7]),
+      };
+    }).filter((row) => row.fullName || row.msisdn || row.department);
+
+    return parsed.reverse();
+  }
+
+  function loadRegistrations() {
+    if (isLoading) return Promise.resolve();
+
+    setLoadingState(true);
+    setStatus("Đang tải danh sách từ Google Sheets...", false);
+
+    return new Promise((resolve, reject) => {
+      const callbackName = `__registrationsCallback_${Date.now()}`;
+      const script = document.createElement("script");
+      const timeout = window.setTimeout(() => {
+        cleanup();
+        reject(new Error("Tải dữ liệu quá thời gian chờ."));
+      }, 15000);
+
+      function cleanup() {
+        window.clearTimeout(timeout);
+        if (script.parentNode) script.parentNode.removeChild(script);
+        delete window[callbackName];
+      }
+
+      window[callbackName] = (response) => {
+        cleanup();
+        try {
+          const rows = parseSheetResponse(response);
+          renderRows(rows);
+          setStatus(
+            `Đã tải ${rows.length} đăng ký từ sheet "${SHEET_NAME}".`,
+            false
+          );
+          hasLoaded = true;
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("Không thể kết nối tới Google Sheets."));
+      };
+
+      script.src =
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${SHEET_GID}` +
+        `&sheet=${encodeURIComponent(SHEET_NAME)}` +
+        `&tqx=${encodeURIComponent(`out:json;responseHandler:${callbackName}`)}` +
+        `&cacheBust=${Date.now()}`;
+
+      document.body.appendChild(script);
+    }).catch((error) => {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="registrations-empty">
+            Không tải được danh sách. Vui lòng thử lại sau.
+          </td>
+        </tr>
+      `;
+      setStatus(error.message || "Không tải được danh sách.", true);
+    }).finally(() => {
+      setLoadingState(false);
+      refreshBtn.hidden = panel.hidden;
+    });
+  }
+
+  toggleBtn.addEventListener("click", async () => {
+    const willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    toggleBtn.setAttribute("aria-expanded", String(willOpen));
+    refreshBtn.hidden = !willOpen;
+    setLoadingState(false);
+
+    if (willOpen && !hasLoaded) {
+      await loadRegistrations();
+    }
+  });
+
+  refreshBtn.addEventListener("click", () => {
+    loadRegistrations();
+  });
 })();

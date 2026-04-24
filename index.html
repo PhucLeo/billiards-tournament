@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Đăng ký Giải Bi-a Thể thao Quý IV</title>
-  <meta name="description" content="Landing page đăng ký tham gia giải bi-a thể thao Quý IV." />
+  <title>Đăng ký Giải Bi-a Kỷ niệm 30/4 và 01/5</title>
+  <meta name="description" content="Landing page đăng ký tham gia giải bi-a chào mừng kỷ niệm ngày 30/4 và 01/5." />
 
   <!-- ✅ Tối ưu kết nối Apps Script -->
   <link rel="preconnect" href="https://script.google.com">
@@ -19,8 +19,8 @@
       <div class="brand">
         <div class="brand__mark" aria-hidden="true"></div>
         <div class="brand__text">
-          <div class="brand__title">Q4 SPORTS</div>
-          <div class="brand__sub">BILLIARDS TOURNAMENT</div>
+          <div class="brand__title">LUMITEL SPORTS</div>
+          <div class="brand__sub">KỶ NIỆM 30/4 - 01/5</div>
         </div>
       </div>
 
@@ -34,12 +34,12 @@
       <div class="container">
         <div class="reg-media reg-media--top">
           <div class="reg-media__banner">
-            <img class="reg-banner" src="./assets/banner-q4-billiards.png" alt="Q4 Sports Billiards Tournament Banner" />
+            <img class="reg-banner" src="./assets/banner-q4-billiards.png" alt="Banner chào mừng kỷ niệm ngày 30/4 và 01/5 của Lumitel" />
           </div>
 
           <div class="reg-media__qr">
-            <img class="reg-qr__img" src="./assets/qr-billiards-register.png" alt="QR đăng ký giải bi-a Quý IV" />
-            <div class="reg-qr__text">Scan QR để đăng ký<br/>giải bi-a Quý IV</div>
+            <img class="reg-qr__img" src="./assets/qr-billiards-register.png" alt="QR đăng ký giải bi-a kỷ niệm 30/4 và 01/5" />
+            <div class="reg-qr__text">Scan QR để đăng ký<br/>giải bi-a 30/4 - 01/5</div>
             <a class="btn btn--soft reg-qr__btn" href="#register">Mở form đăng ký</a>
           </div>
         </div>
@@ -69,6 +69,52 @@
             </div>
           </div>
         </div>
+
+        <div class="registrations-box registrations-box--highlight" id="registrations">
+          <div class="section__head registrations-box__head">
+            <div>
+              <h2>Danh sách đã đăng ký</h2>
+              <!-- <p class="muted">Xem nhanh danh sách đăng ký mới nhất được đồng bộ từ Google Sheets.</p> -->
+            </div>
+            <div class="registrations-box__badge">Nổi bật</div>
+          </div>
+
+          <div class="registrations-box__actions">
+            <button class="btn" type="button" id="toggleRegistrationsBtn" aria-expanded="false" aria-controls="registrationsPanel">
+              Xem danh sách đã đăng ký
+            </button>
+            <button class="btn btn--ghost" type="button" id="refreshRegistrationsBtn" hidden>
+              Tải lại danh sách
+            </button>
+          </div>
+
+          <div id="registrationsPanel" class="registrations-panel" hidden>
+            <div class="registrations-status muted" id="registrationsStatus" role="status" aria-live="polite">
+              Chưa tải dữ liệu.
+            </div>
+
+            <div class="registrations-table-wrap">
+              <table class="registrations-table" id="registrationsTable">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Họ và tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Phòng ban</th>
+                    <th>Hình thức</th>
+                    <th>Trình độ</th>
+                    <th>Thời gian đăng ký</th>
+                  </tr>
+                </thead>
+                <tbody id="registrationsTableBody">
+                  <tr>
+                    <td colspan="7" class="registrations-empty">Bấm nút ở trên để tải danh sách.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -79,10 +125,10 @@
     <section class="hero">
       <div class="container hero__grid">
         <div class="hero__content">
-          <div class="pill">Giải Bi-a Thể thao Quý IV</div>
-          <h1>Q4 Sports<br/>Billiards Tournament</h1>
+          <div class="pill">Giải Bi-a Kỷ niệm 30/4 và 01/5</div>
+          <h1>Chào mừng kỷ niệm<br/>ngày 30/4 và 01/5</h1>
           <p class="lead">
-            Giải đấu nội bộ – thi đấu <strong>đánh đôi</strong>. Đăng ký nhanh bằng form bên dưới hoặc quét QR.
+            Giải đấu nội bộ chào mừng ngày lễ lớn – thi đấu <strong>đánh đôi</strong>. Đăng ký nhanh bằng form bên dưới hoặc quét QR.
           </p>
 
           <div class="hero__cta">
@@ -92,7 +138,7 @@
 
           <div class="qrline">
             <span class="qrline__dot" aria-hidden="true"></span>
-            <span><strong>Scan QR để đăng ký giải bi-a Quý IV</strong></span>
+            <span><strong>Scan QR để đăng ký giải bi-a 30/4 - 01/5</strong></span>
           </div>
         </div>
 
@@ -178,7 +224,7 @@
         <div class="event-info">
             <div class="event-info__title">Thời gian & địa điểm</div>
               <div class="event-info__line">
-                <strong>Thứ 5, 25/12/2025</strong> • <strong>14:00–17:30</strong>
+                <strong>Chủ nhật, 26/04/2026</strong> • <strong>15:00–18:00</strong>
               </div>
             <div class="event-info__line">
               Địa điểm: <strong>Nhà thi đấu Newhouse</strong> • <strong>Bujumbura</strong>
@@ -297,7 +343,7 @@
 
     <footer class="footer">
       <div class="container footer__inner">
-        <div class="muted">© Q4 Sports — Billiards Tournament</div>
+        <div class="muted">© Lumitel Sports — Giải Bi-a Kỷ niệm 30/4 và 01/5</div>
         <a class="muted" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'})">Lên đầu trang</a>
       </div>
     </footer>
