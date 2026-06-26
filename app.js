@@ -257,8 +257,8 @@
 
 // ===== Countdown to event time =====
 (function () {
-  // Event time: 26/04/2026 15:00 (UTC+2 - Bujumbura/Johannesburg)
-  const EVENT_TIME = new Date("2026-04-26T15:00:00+02:00").getTime();
+  // Event time: 28/06/2026 15:00 (UTC+2 - Bujumbura/Johannesburg)
+  const EVENT_TIME = new Date("2026-06-28T15:00:00+02:00").getTime();
 
   const dEl = document.getElementById("cd-days");
   const hEl = document.getElementById("cd-hours");
